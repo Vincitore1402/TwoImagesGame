@@ -1,0 +1,11 @@
+<h2>{{heading}}</h2>
+<div class="buttons">
+  <button class="btn start" (click)="start()">Change Field</button> <button class="btn restart" (click)="restartField()">Clear this field</button> <br>
+  <button class="btn score">{{score}}</button>
+</div>
+<div class="field">
+  <div class="row" *ngFor="let row of rows">
+    <div class="cell"  *ngFor="let cell of row.cells" [ngStyle]="{'background-image':'url(' + cell.bgImage + ')'}" [ngClass]="{'hidden': cell.isHidden}" (click)="showCell(cell)">
+    </div>
+  </div>
+</div>

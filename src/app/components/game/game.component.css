@@ -1,0 +1,77 @@
+/* Title */
+h2 {
+  text-transform: uppercase;
+  color: #eee;
+  font-weight: 550;
+  font-size: 1.7rem;
+  padding: 0.32rem 0.8rem;
+  border: 1px solid rgba(0,0,0,0);
+  border-radius: 7px;
+  background-color: #2A5870;
+}
+
+/* Button class */
+.btn {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1rem;
+  display: inline-block;
+  padding: 0.32rem 0.8rem;
+  border: 1px solid rgba(0,0,0,0);
+  border-radius: 7px;
+  margin-right: 0.6rem;
+  margin-bottom: 0.6rem;
+  color: #fff;
+  background: rgba(4, 151, 21, 0.98);
+}
+
+/* Score button */
+.score {
+  font-size: 0.75rem;
+  background: #000;
+}
+
+/* Restart button */
+.restart {
+  background: #A0249A;
+}
+
+/* Game field */
+.field {
+  margin-top: 20px;
+  display: inline-block;
+  border-radius: 20px;
+}
+
+/* Row of the field */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  height: 80px;
+  margin-bottom: 0.15rem;
+}
+
+/* Cell class */
+.cell {
+  background-size: cover;
+  display: inline-block;
+  /* border: 1px solid rgb(17, 2, 2); */
+  border-radius: 14px;
+  width: 80px;
+  height: 80px;
+  margin: 0.15rem 0.15rem;
+}
+
+/* Hidden cell class */
+.hidden {
+  background-image: none !important;
+  background: rgba(88, 54, 211, 0.86);
+}
+
+@media(max-width: 700px) {
+  .field {
+    max-height: 80vh;
+  }
+  .row {
+    display: inline-block;
+  }
+}
