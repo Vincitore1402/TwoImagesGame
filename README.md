@@ -1,7 +1,7 @@
 # Test task using Angular 4
 Find 2 images game
 
-## Hosted by Firebase
+## Hosted using Firebase
 https://twoimagesgame.firebaseapp.com
 
 
