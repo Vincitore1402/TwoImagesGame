@@ -11,6 +11,8 @@ export class GameComponent implements OnInit {
   // UI Elements
   heading:string = "Find 2 same images";
   score:string = "Score: ";
+  currentTime:string = "Timer: 00:00";
+  timer;
 
   // URLs with resources
   SIZE_URL:string = "https://kde.link/test/get_field_size.php";
@@ -41,6 +43,24 @@ export class GameComponent implements OnInit {
         this.changeScore();
       }
     });
+    
+  }
+
+  startGameTimer() {
+    console.log('Timer started');
+    let seconds = 0;
+    let minutes = 0;
+    this.timer = setInterval(() => {
+        console.log('Interval started');
+        if (seconds == 60) {
+          minutes++;
+          seconds = 0;
+        } else {
+          seconds++;
+        }
+        this.currentTime = `Time: ${minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}:${seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}`;
+      },1000);
+    console.log('bruh');
   }
 
   restartField() {
@@ -49,12 +69,15 @@ export class GameComponent implements OnInit {
     this.createField(this.data.width, this.data.height);
     this.getAndFillImages(this.data.width, this.data.height);
     this.changeScore();
+    
   }
 
   // Clear field
   clearField() {
+    this.heading = "Find 2 same images";
+    this.currentTime = "Time: 00:00";
     this.rows = [];
-    this.cells = []
+    this.cells = [];
   }
 
   // Create game field
@@ -132,9 +155,13 @@ export class GameComponent implements OnInit {
           currentCells[1].isGuessed = true;
           this.changeScore();
         } else {
-          // Noguessed
+          // No-guessed
           setTimeout(this.hideCells, 750, currentCells);
         }
+      }
+      // FIX No-hidden cells BUG
+      if (currentCells.length > 2) {
+        setTimeout(this.hideCells, 750, currentCells);
       }
       this.checkForWin();
     }
@@ -156,6 +183,7 @@ export class GameComponent implements OnInit {
     });
     if (guessedCells.length === this.cells.length)
       this.heading = 'Congratulations! You won!';
+      //clearInterval(this.timer);
   }
 
   changeScore() {

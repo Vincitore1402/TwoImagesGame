@@ -1,7 +1,8 @@
 <h2>{{heading}}</h2>
 <div class="buttons">
   <button class="btn start" (click)="start()">Change Field</button> <button class="btn restart" (click)="restartField()">Clear this field</button> <br>
-  <button class="btn score">{{score}}</button>
+  <button class="btn score">{{score}}</button> <br>
+  <!-- <button class="btn score">{{currentTime}}</button> -->
 </div>
 <div class="field">
   <div class="row" *ngFor="let row of rows">
