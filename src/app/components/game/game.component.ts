@@ -14,8 +14,8 @@ export class GameComponent implements OnInit {
   currentTime:string = "Timer: 00:00";
   timer;
 
-  // URLs with resources
-  SIZE_URL:string = "https://kde.link/test/get_field_size.php";
+  // URLs with resources (Update - size url doesnt work)
+  // SIZE_URL:string = "https://kde.link/test/get_field_size.php";
   IMAGES_URL:string = "https://kde.link/test/";
 
   // Rows of field
@@ -23,27 +23,53 @@ export class GameComponent implements OnInit {
   // All cells
   cells = [];
 
-  // Gotten data from script
-  data;
+  // Initial size of field
+  data = {
+    width: 4,
+    height: 3
+  };
 
+  showChangeSizeButtons:boolean = false;
+  
   ngOnInit() {
     this.start();
   }
 
   start() {
-    $.ajax({
-      type: "GET",
-      url: this.SIZE_URL,
-      dataType: "json",
-      success:  (data) => {
-        this.data = data;
-        this.clearField();
-        this.createField(data.width, data.height);
-        this.getAndFillImages(data.width, data.height);
-        this.changeScore();
-      }
-    });
-    
+    this.clearField();
+    this.createField(this.data.width, this.data.height);
+    this.getAndFillImages(this.data.width, this.data.height);
+    this.changeScore();
+  }
+
+  // Init game with small field (4x3)
+  startSmallField() {
+    this.data = {
+      width: 4,
+      height: 3
+    }
+    this.showChangeSizeButtons = false;
+    this.start();
+  }
+
+   // Init game with normal field field (5x6)
+  startNormalField() {
+    this.data = {
+      width: 6,
+      height: 5
+    }
+    this.showChangeSizeButtons = false;
+    this.start();
+  }
+
+  // Init game with large field (6x8)
+  startLargeField() {
+    this.data = {
+      width: 6,
+      height: 8
+    }
+    this.showChangeSizeButtons = false;
+    this.start();
   }
 
   startGameTimer() {

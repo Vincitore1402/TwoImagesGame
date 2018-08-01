@@ -1,6 +1,12 @@
 <h2>{{heading}}</h2>
 <div class="buttons">
-  <button class="btn start" (click)="start()">Change Field</button> <button class="btn restart" (click)="restartField()">Clear this field</button> <br>
+  <button class="btn start" (click)="showChangeSizeButtons = !showChangeSizeButtons">Change Field</button> 
+  <div *ngIf="showChangeSizeButtons" class="change-size">
+    <button class="btn sm-size" (click)="startSmallField()">Small</button>
+    <button class="btn nm-size" (click)="startNormalField()">Normal</button>
+    <button class="btn lg-size" (click)="startLargeField()">Large</button>
+  </div>
+  <button class="btn restart" (click)="restartField()">Restart this field</button> <br>
   <button class="btn score">{{score}}</button> <br>
   <!-- <button class="btn score">{{currentTime}}</button> -->
 </div>

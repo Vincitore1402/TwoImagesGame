@@ -35,6 +35,25 @@ h2 {
   background: #A0249A;
 }
 
+/* Change field size buttons */
+.sm-size {
+  background: #00695c;
+}
+
+.nm-size {
+  background: #33691e;
+}
+
+.lg-size {
+  background: #01579b;
+}
+
+/* Change size buttons area */
+.change-size {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
 /* Game field */
 .field {
   margin-top: 20px;
@@ -54,7 +73,6 @@ h2 {
 .cell {
   background-size: cover;
   display: inline-block;
-  /* border: 1px solid rgb(17, 2, 2); */
   border-radius: 14px;
   width: 80px;
   height: 80px;
@@ -75,3 +93,4 @@ h2 {
     display: inline-block;
   }
 }
+
