@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import axios from 'axios';
 import * as $ from 'jquery';
 @Component({
   selector: 'app-game',
@@ -9,14 +10,15 @@ export class GameComponent implements OnInit {
 
   constructor() { }
   // UI Elements
-  heading:string = "Find 2 same images";
-  score:string = "Score: ";
-  currentTime:string = "Timer: 00:00";
+  heading = 'Find 2 same images';
+  score = 'Score: ';
+  currentTime = 'Timer: 00:00';
   timer;
 
-  // URLs with resources (Update - size url doesnt work)
-  // SIZE_URL:string = "https://kde.link/test/get_field_size.php";
-  IMAGES_URL:string = "https://kde.link/test/";
+  IMAGES_URL = 'https://picsum.photos';
+
+  IMAGES_WIDTH = 320;
+  IMAGES_HEIGHT = 320;
 
   // Rows of field
   rows = [];
@@ -29,47 +31,60 @@ export class GameComponent implements OnInit {
     height: 3
   };
 
-  showChangeSizeButtons:boolean = false;
-  
-  ngOnInit() {
-    this.start();
+  showChangeSizeButtons = false;
+
+  static getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
   }
 
-  start() {
+   static async isImageExist(imageUrl) {
+    try {
+      await axios.get(imageUrl);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async ngOnInit() {
+    await this.start();
+  }
+
+  async start() {
     this.clearField();
     this.createField(this.data.width, this.data.height);
-    this.getAndFillImages(this.data.width, this.data.height);
+    await this.getAndFillImages(this.data.width, this.data.height);
     this.changeScore();
   }
 
   // Init game with small field (4x3)
-  startSmallField() {
+  async startSmallField() {
     this.data = {
       width: 4,
       height: 3
-    }
+    };
     this.showChangeSizeButtons = false;
-    this.start();
+    await this.start();
   }
 
    // Init game with normal field field (5x6)
-  startNormalField() {
+  async startNormalField() {
     this.data = {
       width: 6,
       height: 5
-    }
+    };
     this.showChangeSizeButtons = false;
-    this.start();
+    await this.start();
   }
 
   // Init game with large field (6x8)
-  startLargeField() {
+  async startLargeField() {
     this.data = {
       width: 6,
       height: 8
-    }
+    };
     this.showChangeSizeButtons = false;
-    this.start();
+    await this.start();
   }
 
   startGameTimer() {
@@ -78,30 +93,44 @@ export class GameComponent implements OnInit {
     let minutes = 0;
     this.timer = setInterval(() => {
         console.log('Interval started');
-        if (seconds == 60) {
+        if (seconds === 60) {
           minutes++;
           seconds = 0;
         } else {
           seconds++;
         }
-        this.currentTime = `Time: ${minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}:${seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}`;
-      },1000);
+        this.currentTime = `Time: ${minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})}:${seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})}`;
+      }, 1000);
     console.log('bruh');
   }
 
-  restartField() {
+  async getImageUrl() {
+    const url = `${this.IMAGES_URL}/id/${GameComponent.getRandomInt(1000)}/${this.IMAGES_HEIGHT}/${this.IMAGES_WIDTH}`;
+
+    const isImageExists = await GameComponent.isImageExist(url);
+
+    console.log({
+      url,
+      isImageExists
+    });
+
+    return isImageExists
+      ? url
+      : this.getImageUrl();
+  }
+
+  async restartField() {
     // Start game with old sizes of field
     this.clearField();
     this.createField(this.data.width, this.data.height);
-    this.getAndFillImages(this.data.width, this.data.height);
+    await this.getAndFillImages(this.data.width, this.data.height);
     this.changeScore();
-    
   }
 
   // Clear field
   clearField() {
-    this.heading = "Find 2 same images";
-    this.currentTime = "Time: 00:00";
+    this.heading = 'Find 2 same images';
+    this.currentTime = 'Time: 00:00';
     this.rows = [];
     this.cells = [];
   }
@@ -109,13 +138,13 @@ export class GameComponent implements OnInit {
   // Create game field
   createField(width, height) {
     for (let i = 0; i < width; i++) {
-      let row = {
+      const row = {
         cells: []
       };
       for (let j = 0; j < height; j++) {
         row.cells[j] = {
-          index : "0,0",
-          bgImage: "",
+          index : '0,0',
+          bgImage: '',
           isHidden: true,
           isGuessed: false
         };
@@ -133,20 +162,21 @@ export class GameComponent implements OnInit {
   }
 
   // Get urls of images and fill the cells
-  getAndFillImages(width, height) {
-    let images = [];
+  async getAndFillImages(width, height) {
+    const images = [];
 
     // Push urls of images from the resource to the array
-    for (let i = 0; images.length != (width * height)/2; i++) {
+    for (let i = 0; images.length !== (width * height) / 2; i++) {
       for (let j = 0; j < 10; j++) {
-        if (images.length != (width * height)/2)
-          images.push(this.IMAGES_URL + j + '.png');
+        if (images.length !== (width * height) / 2) {
+          images.push(await this.getImageUrl());
+        }
       }
     }
 
     // Duplicate array with images
-    let imagesToShow = images.concat(images);
-    
+    const imagesToShow = images.concat(images);
+
     // Mix images
     imagesToShow.sort(() => {
       return Math.random() - 0.3;
@@ -165,10 +195,10 @@ export class GameComponent implements OnInit {
       cell.isHidden = false;
 
       // Get all no-guessed and no-hidden cells
-      let currentCells = [];
-      this.cells.forEach((cell) => {
-        if (!cell.isGuessed && !cell.isHidden) {
-          currentCells.push(cell);
+      const currentCells = [];
+      this.cells.forEach((item) => {
+        if (!item.isGuessed && !item.isHidden) {
+          currentCells.push(item);
         }
       });
 
@@ -201,25 +231,25 @@ export class GameComponent implements OnInit {
 
   checkForWin() {
     // Get all guessed cells
-    let guessedCells = [];
+    const guessedCells = [];
     this.cells.forEach((cell) => {
       if (cell.isGuessed) {
         guessedCells.push(cell);
       }
     });
-    if (guessedCells.length === this.cells.length)
+    if (guessedCells.length === this.cells.length) {
       this.heading = 'Congratulations! You won!';
-      //clearInterval(this.timer);
+    }
   }
 
   changeScore() {
     // Get all guessed cells
-    let guessedCells = [];
+    const guessedCells = [];
     this.cells.forEach((cell) => {
       if (cell.isGuessed) {
         guessedCells.push(cell);
       }
     });
-    this.score = `Score: ${guessedCells.length/2}/${this.cells.length/2}`;
+    this.score = `Score: ${guessedCells.length / 2}/${this.cells.length / 2}`;
   }
 }
